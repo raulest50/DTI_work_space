@@ -1,0 +1,13 @@
+{
+  "name": "ComplexMultiplier",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "ComplexMultiplier"
+  },
+  "useSysrootToolchain": false,
+  "template": "empty_hls_component"
+}
