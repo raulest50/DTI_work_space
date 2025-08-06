@@ -1,0 +1,7 @@
+# Archivos específicos de pruebas de este componente
+/test/tb
+
+# Archivos específicos de este componente
+*.hlsrun_csim_summary
+*.hlscompile_summary
+Tridiagonal_Solver.hlsrun_package_summary

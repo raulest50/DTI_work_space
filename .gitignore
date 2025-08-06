@@ -1,0 +1,40 @@
+# Directorios comunes de compilación y salida para componentes HLS
+**/build/
+**/export/
+**/ip/
+**/_ide/
+**/.Xil/
+**/report/
+**/packaged_kernel*/
+
+# Archivos específicos de Vitis
+**/*.vitis
+**/*.coe
+**/*.xsa
+**/.vitisWorkspace.json
+
+# Archivos de simulación y síntesis
+**/*.sim/
+**/*.runs/
+**/*.hw/
+**/*.cache/
+
+# Archivos de solución y bitstream
+**/*.pdi
+**/*.bin
+**/*.bit
+**/*.ltx
+
+# Archivos objeto y dependencias
+**/*.o
+**/*.d
+
+# Archivos de log y temporales
+**/*.log
+**/*.jou
+**/*.pb
+**/*.rpt
+**/*.lock
+**/*.swp
+**/*~
+**/.DS_Store

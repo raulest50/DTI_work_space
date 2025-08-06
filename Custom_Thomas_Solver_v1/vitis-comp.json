@@ -1,0 +1,13 @@
+{
+  "name": "Custom_Thomas_Solver_v1",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "Custom_Thomas_Solver_v1"
+  },
+  "useSysrootToolchain": false,
+  "template": "empty_hls_component"
+}

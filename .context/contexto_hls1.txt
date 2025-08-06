@@ -1,0 +1,39 @@
+Effects of Pragmas on HLS Timing (empirical findings)
+────────────────────────────────────────────────────────
+
+1. PIPELINE II=1 in large loops
+   • HLS forces minimal initiation interval, creating long combinational chains
+   • Leads to negative slack and unmet clock targets
+   • Auto-pipelining also tries II=1 by default if no hint
+
+2. PIPELINE II>1 or no PIPELINE
+   • Relaxed II avoids aggressive scheduling
+   • Eliminates negative slack at cost of throughput
+   • Sequential loops always meet timing if logic fits one cycle
+
+3. DATAFLOW
+   • Breaks design into concurrent stages
+   • Can improve throughput by overlapping load/compute/store
+   • Still auto-pipelines inner loops—may reintroduce negative slack if stages heavy
+
+4. ARRAY\_PARTITION COMPLETE
+   • Eliminates multi-cycle RAM access, enabling single-cycle reads/writes
+   • Removes bus-dependency warnings when combined with local buffers
+
+5. bind\_op / custom latency
+   • Inserting manual operator bindings creates extra logic levels
+   • Often worsens critical paths instead of helping
+
+6. Function splitting + INLINE OFF
+   • Isolates logic into smaller FSM regions
+   • Shorter per-stage paths—better timing without heavy pipelining
+
+7. No pragmas = “slow but safe”
+   • Purely sequential HLS FSM meets clock easily
+   • Zero negative slack; Fmax limited by slowest op latency
+
+Takeaway:
+
+* **Aggressive pipelining** yields high throughput but risks negative slack.
+* **Relaxation** (higher II or no pipeline) trades performance for timing safety.
+* **Partitioning arrays** and **function-level isolation** are the strongest levers to clear critical paths before tuning pipelining.
