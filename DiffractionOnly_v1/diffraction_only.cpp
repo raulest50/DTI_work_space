@@ -27,30 +27,30 @@ static complex_t complex_div(const complex_t &num, const complex_t &den) {
     if (mag2 < eps2) mag2 = eps2;
     data_t inv = (data_t)1.0f / mag2;
     complex_t cd(re, -im);
-    complex_t p = num * cd;
+    complex_t p  = cd * num;
     return complex_t(p.real() * inv, p.imag() * inv);
 }
 
 static void compute_b_vector(
-    const complex_t dp,
-    const complex_t dp1,
-    const complex_t dp2,
-    const complex_t off,
+    complex_t dp,
+    complex_t dp1,
+    complex_t dp2,
+    complex_t off,
     const complex_t x0[N],
           complex_t b[N]
 ) {
-    b[0] = dp1 * x0[0] + off * x0[1];
+    b[0] = x0[0] * dp1 + x0[1] * off;
     for (int i = 1; i < N-1; i++) {
-        b[i] = off * x0[i-1] + dp * x0[i] + off * x0[i+1];
+        b[i] = x0[i-1] * off + x0[i] * dp + x0[i+1] * off;
     }
-    b[N-1] = off * x0[N-2] + dp2 * x0[N-1];
+    b[N-1] = x0[N-2] * off + x0[N-1] * dp2;
 }
 
 static void thomas_solver(
-    const complex_t dp,
-    const complex_t dp1,
-    const complex_t dp2,
-    const complex_t off,
+    complex_t dp,
+    complex_t dp1,
+    complex_t dp2,
+    complex_t off,
           complex_t b[N],
           complex_t x[N]
 ) {
@@ -59,22 +59,22 @@ static void thomas_solver(
 
     // first iteration
     complex_t inv1 = complex_div(C_ONE, dp1);
-    c_prime[0]     = off * inv1;
+    c_prime[0]     = inv1 * off;
     d_prime[0]     = b[0] * inv1;
 
     // forward sweep
     for (int i = 1; i < N-1; i++) {
-        complex_t denom = dp - off * c_prime[i-1];
+        complex_t denom = dp - c_prime[i-1] * off;
         complex_t invd  = complex_div(C_ONE, denom);
-        c_prime[i]      = off * invd;
-        d_prime[i]      = (b[i] - off * d_prime[i-1]) * invd;
+        c_prime[i]      = invd * off;
+        d_prime[i]      = (b[i] - d_prime[i-1] * off) * invd;
     }
 
     // last element
     {
-        complex_t denom = dp2 - off * c_prime[N-2];
+        complex_t denom = dp2 - c_prime[N-2] * off;
         complex_t invd  = complex_div(C_ONE, denom);
-        d_prime[N-1]    = (b[N-1] - off * d_prime[N-2]) * invd;
+        d_prime[N-1]    = (b[N-1] - d_prime[N-2] * off) * invd;
     }
 
     // backward substitution
@@ -87,9 +87,9 @@ static void thomas_solver(
 static void adi_x(const complex_t in[N][N], complex_t out[N][N]) {
     complex_t x0[N], b[N], x[N];
 
-    const complex_t ung   = complex_t(0, dz / (4 * k * dx * dx));
-    const complex_t neg2u = ung * complex_t(-2.0f, 0.0f);
-    const complex_t pos2u = ung * complex_t( 2.0f, 0.0f);
+    complex_t ung   = complex_t(0, dz / (4 * k * dx * dx));
+    complex_t neg2u = complex_t(-2.0f, 0.0f) * ung;
+    complex_t pos2u = complex_t( 2.0f, 0.0f) * ung;
 
     for (int j = 0; j < N; j++) {
         for (int i = 0; i < N; i++) {
@@ -100,13 +100,13 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]) {
         complex_t ratioN = is_near_zero(x0[N-2]) ? C_ONE : complex_div(x0[N-1], x0[N-2]);
 
         // step B
-        complex_t dp_B  = C_ONE + neg2u;
+        complex_t dp_B  = neg2u + C_ONE;
         complex_t dp1_B = dp_B + ung * ratio0;
         complex_t dp2_B = dp_B + ung * ratioN;
         compute_b_vector(dp_B, dp1_B, dp2_B, ung, x0, b);
 
         // step A
-        complex_t dp_A  = C_ONE + pos2u;
+        complex_t dp_A  = pos2u + C_ONE;
         complex_t dp1_A = dp_A - ung * ratio0;
         complex_t dp2_A = dp_A - ung * ratioN;
         thomas_solver(dp_A, dp1_A, dp2_A, -ung, b, x);
@@ -120,9 +120,9 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]) {
 static void adi_y(const complex_t in[N][N], complex_t out[N][N]) {
     complex_t x0[N], b[N], x[N];
 
-    const complex_t ung   = complex_t(0, dz / (4 * k * dy * dy));
-    const complex_t neg2u = ung * complex_t(-2.0f, 0.0f);
-    const complex_t pos2u = ung * complex_t( 2.0f, 0.0f);
+    complex_t ung   = complex_t(0, dz / (4 * k * dy * dy));
+    complex_t neg2u = complex_t(-2.0f, 0.0f) * ung;
+    complex_t pos2u = complex_t( 2.0f, 0.0f) * ung;
 
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -133,13 +133,13 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]) {
         complex_t ratioN = is_near_zero(x0[N-2]) ? C_ONE : complex_div(x0[N-1], x0[N-2]);
 
         // step B
-        complex_t dp_B  = C_ONE + neg2u;
+        complex_t dp_B  = neg2u + C_ONE;
         complex_t dp1_B = dp_B + ung * ratio0;
         complex_t dp2_B = dp_B + ung * ratioN;
         compute_b_vector(dp_B, dp1_B, dp2_B, ung, x0, b);
 
         // step A
-        complex_t dp_A  = C_ONE + pos2u;
+        complex_t dp_A  = pos2u + C_ONE;
         complex_t dp1_A = dp_A - ung * ratio0;
         complex_t dp2_A = dp_A - ung * ratioN;
         thomas_solver(dp_A, dp1_A, dp2_A, -ung, b, x);
