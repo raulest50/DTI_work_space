@@ -12,7 +12,7 @@ const int N = 64;
 using data_t    = float;
 using complex_t = hls::x_complex<data_t>;
 
-void diffraction_only(complex_t phi_in[N][N],
+void diffraction_only(const complex_t phi_in[N][N],
                       complex_t phi_out[N][N]);
 
 #endif // DIFFRACTION_ONLY_H
