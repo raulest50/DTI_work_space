@@ -5,3 +5,5 @@
 *.hlsrun_csim_summary
 *.hlscompile_summary
 Tridiagonal_Solver.hlsrun_package_summary
+dfx_runtime.txt
+Custom_Thomas_Solver_v1
