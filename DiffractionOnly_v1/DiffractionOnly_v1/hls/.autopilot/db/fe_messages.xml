@@ -1,6 +1,0 @@
-<xilinx:hls_fe_msgs>
-    <msg msg_groups="" msg_id="207-2972" msg_severity="ERROR" msg_loc="diffraction_only.cpp:13:17" msg_body="no member named 'hypot' in namespace 'hls'">
-        <args/>
-    </msg>
-</xilinx:hls_fe_msgs>
-
