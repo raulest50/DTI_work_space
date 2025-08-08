@@ -1,0 +1,21 @@
+<dict>
+  <key>main-file</key>
+  <string>C:/DTI_work_space/DiffractionOnly_v1/DiffractionOnly_v1/hls/.autopilot/db/diffraction_only.pp.0.cpp</string>
+  <key>diagnostics</key>
+  <array>
+    <dict>
+      <key>level</key>
+      <string>error</string>
+      <key>filename</key>
+      <string>diffraction_only.cpp</string>
+      <key>line</key>
+      <integer>13</integer>
+      <key>column</key>
+      <integer>17</integer>
+      <key>message</key>
+      <string>no member named &apos;hypot&apos; in namespace &apos;hls&apos;</string>
+      <key>ID</key>
+      <integer>2972</integer>
+    </dict>
+  </array>
+</dict>

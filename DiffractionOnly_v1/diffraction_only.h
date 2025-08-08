@@ -1,3 +1,4 @@
+// diffraction_only.h
 #ifndef DIFFRACTION_ONLY_H
 #define DIFFRACTION_ONLY_H
 
@@ -8,7 +9,7 @@
 #endif
 
 const int N = 64;
-using data_t = float;
+using data_t    = float;
 using complex_t = hls::x_complex<data_t>;
 
 void diffraction_only(complex_t phi_in[N][N],
