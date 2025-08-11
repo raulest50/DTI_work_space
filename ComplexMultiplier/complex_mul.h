@@ -1,16 +1,11 @@
 #ifndef COMPLEX_MUL_H
 #define COMPLEX_MUL_H
 
-#if __has_include(<hls_x_complex.h>)
-#  include <hls_x_complex.h>
-#else
-#  include "hls_stub.h"
-#endif
-
+#include <complex>
 #include <cmath>
 
 using data_t = float;
-using complex_t = hls::x_complex<data_t>;
+using complex_t = std::complex<data_t>;
 
 // Multiply two complex numbers (a_real + j*a_imag) * (b_real + j*b_imag).
 void complex_mul(data_t a_real,
