@@ -1,0 +1,13 @@
+{
+  "name": "complex_division",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "complex_division"
+  },
+  "useSysrootToolchain": false,
+  "template": "empty_hls_component"
+}
