@@ -20,7 +20,7 @@ inline bool is_near_zero(const complex_t &z) {
 
 
 static complex_t complex_div(const complex_t &num, const complex_t &den) {
-    #pragma HLS INLINE
+    #pragma HLS INLINE off
     data_t re = den.real();
     data_t im = den.imag();
     data_t mag2 = re*re + im*im;
@@ -39,6 +39,7 @@ static void compute_b_vector(
     const complex_t x0[N],
           complex_t b[N]
 ) {
+    #pragma HLS INLINE off
     b[0] = x0[0] * dp1 + x0[1] * off;
     for (int i = 1; i < N-1; i++) {
         b[i] = x0[i-1] * off + x0[i] * dp + x0[i+1] * off;
@@ -53,8 +54,9 @@ static void thomas_solver(
     complex_t off,
     complex_t b[N],
     complex_t x[N]
-) 
-{    
+)
+{
+    #pragma HLS INLINE off
     complex_t c_prime[N];
     complex_t d_prime[N];
 
@@ -86,6 +88,7 @@ static void thomas_solver(
 }
 
 static void adi_x(const complex_t in[N][N], complex_t out[N][N]) {
+    #pragma HLS INLINE off
     complex_t x0[N], b[N], x[N];
 
     complex_t ung   = complex_t(0, dz / (4 * k * dx * dx));
@@ -119,6 +122,7 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]) {
 }
 
 static void adi_y(const complex_t in[N][N], complex_t out[N][N]) {
+    #pragma HLS INLINE off
     complex_t x0[N], b[N], x[N];
 
     complex_t ung   = complex_t(0, dz / (4 * k * dy * dy));
@@ -161,11 +165,11 @@ void diffraction_only(
 #pragma HLS INTERFACE m_axi     port=phi_out offset=slave bundle=gmem depth=4096
 #pragma HLS INTERFACE s_axilite port=phi_out bundle=control
 
-    // Force ONLY these big matrices into URAM; everything else left to inference
+    // Store big matrices in BRAM to keep resources modest
     complex_t phi[N][N];
     complex_t tmp[N][N];
-#pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=uram
-#pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=uram
+#pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=bram
+#pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=bram
 
     // copy input
     for (int i = 0; i < N; i++)
