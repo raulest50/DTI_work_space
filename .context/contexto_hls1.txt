@@ -37,3 +37,7 @@ Takeaway:
 * **Aggressive pipelining** yields high throughput but risks negative slack.
 * **Relaxation** (higher II or no pipeline) trades performance for timing safety.
 * **Partitioning arrays** and **function-level isolation** are the strongest levers to clear critical paths before tuning pipelining.
+
+8. Uso de std::complex
+   • La documentación de AMD Xilinx Vitis HLS 2025.1 recomienda `std::complex` en lugar de `hls::complex`.
+   • `std::complex` es parte del estándar de C++ y ofrece más compatibilidad y operadores, mientras que `hls::complex` queda para compatibilidad heredada.
