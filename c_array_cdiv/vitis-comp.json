@@ -1,0 +1,13 @@
+{
+  "name": "c_array_cdiv",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "c_array_cdiv"
+  },
+  "useSysrootToolchain": false,
+  "template": "empty_hls_component"
+}
