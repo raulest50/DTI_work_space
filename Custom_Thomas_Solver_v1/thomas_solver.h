@@ -1,18 +1,12 @@
 #ifndef THOMAS_SOLVER_H
 #define THOMAS_SOLVER_H
 
-#if __has_include(<hls_x_complex.h>)
-#  include <hls_x_complex.h>
-#  include <hls_stream.h>
-#else
-#  include "hls_stub.h"
-#endif
-
+#include <complex>
 #include <cmath>
 
 const int N = 64;
 using data_t = float;
-using complex_t = hls::x_complex<data_t>;
+using complex_t = std::complex<data_t>;
 
 // Solve a tridiagonal system with constant diagonals.  All coefficients and
 // the right hand side are complex floating point values using single
