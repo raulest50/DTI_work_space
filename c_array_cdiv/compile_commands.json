@@ -6,7 +6,6 @@
       "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls",
       "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
-      "-fhlstoplevel=c_array_cdiv",
       "-c",
       "C:\\DTI_work_space\\c_array_cdiv\\.\\c_array_cdiv.cpp"
     ],

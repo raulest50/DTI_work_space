@@ -18,9 +18,9 @@ inline bool is_near_zero(const complex_t &z) {
     return (re*re + im*im) < eps2;
 }
 
-// Minimal manual complex divide (no operator/), with tiny guard
-#pragma HLS INLINE
+
 static complex_t complex_div(const complex_t &num, const complex_t &den) {
+    #pragma HLS INLINE
     data_t re = den.real();
     data_t im = den.imag();
     data_t mag2 = re*re + im*im;
@@ -51,9 +51,10 @@ static void thomas_solver(
     complex_t dp1,
     complex_t dp2,
     complex_t off,
-          complex_t b[N],
-          complex_t x[N]
-) {
+    complex_t b[N],
+    complex_t x[N]
+) 
+{    
     complex_t c_prime[N];
     complex_t d_prime[N];
 

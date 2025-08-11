@@ -21,3 +21,6 @@ _ide/logs
 _ide/.wsdata
 
 /DiffractionOnly_v1/
+
+dfx_runtime.txt
+.hls.failed
