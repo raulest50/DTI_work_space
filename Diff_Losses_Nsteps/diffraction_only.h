@@ -13,8 +13,9 @@ using data_t    = float;
 using complex_t = std::complex<float>;
 
 // ---- Wrappers SIN plantillas (una única firma) ----
-// Nota: evitamos usar operadores de std::complex directamente en hotpaths.
-// Centralizamos acceso por funciones y controlamos inlining en el .cpp.
+// Importante: evitar llamadas directas a operadores de std::complex
+// en múltiples contextos. Centralizamos aquí y desactivamos inline.
+
 static inline complex_t c_make(data_t re=0.f, data_t im=0.f) {
     return complex_t(re, im);
 }

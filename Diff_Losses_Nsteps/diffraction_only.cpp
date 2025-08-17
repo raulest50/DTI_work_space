@@ -1,36 +1,40 @@
 // diffraction_only.cpp
 #include "diffraction_only.h"
 
-// -----------------------------------------------------------------------------
-// Helpers de complejos (inline off para evitar replicación y facilitar sharing)
-// -----------------------------------------------------------------------------
+// ---- Implementación de wrappers (una firma, pragmas dentro) ----
 static complex_t c_add(const complex_t &a, const complex_t &b) {
   #pragma HLS INLINE off
   return complex_t(c_re(a)+c_re(b), c_im(a)+c_im(b));
 }
+
 static complex_t c_sub(const complex_t &a, const complex_t &b) {
   #pragma HLS INLINE off
   return complex_t(c_re(a)-c_re(b), c_im(a)-c_im(b));
 }
+
 static complex_t c_scale(const complex_t &a, data_t s) {
   #pragma HLS INLINE off
   return complex_t(c_re(a)*s, c_im(a)*s);
 }
+
 static complex_t c_mul(const complex_t &a, const complex_t &b) {
   #pragma HLS INLINE off
   data_t ar = c_re(a), ai = c_im(a);
   data_t br = c_re(b), bi = c_im(b);
   return complex_t(ar*br - ai*bi, ar*bi + ai*br);
 }
+
 static data_t c_abs2(const complex_t &a) {
   #pragma HLS INLINE off
   data_t ar = c_re(a), ai = c_im(a);
   return ar*ar + ai*ai;
 }
+
 static complex_t c_conj(const complex_t &a) {
   #pragma HLS INLINE off
   return complex_t(c_re(a), -c_im(a));
 }
+
 static complex_t c_div_safe(const complex_t &num, const complex_t &den, data_t eps2) {
   #pragma HLS INLINE off
   data_t mag2 = c_abs2(den);
@@ -39,6 +43,7 @@ static complex_t c_div_safe(const complex_t &num, const complex_t &den, data_t e
   complex_t p = c_mul(c_conj(den), num);
   return complex_t(c_re(p)*inv, c_im(p)*inv);
 }
+
 static bool c_near_zero(const complex_t &z, data_t eps2) {
   #pragma HLS INLINE off
   return c_abs2(z) < eps2;
@@ -63,21 +68,16 @@ static complex_t complex_div(const complex_t &num, const complex_t &den) {
   return c_div_safe(num, den, eps2);
 }
 
-// -----------------------------------------------------------------------------
 // b = off*x0[i-1] + dp*x0[i] + off*x0[i+1], bordes dp1/dp2
-// Buffers 1D en LUTRAM 1P para minimizar BRAM.
-// -----------------------------------------------------------------------------
 static void compute_b_vector(
     complex_t dp,  complex_t dp1, complex_t dp2, complex_t off,
     const complex_t x0[N],
           complex_t b [N]
 ){
   #pragma HLS INLINE off
+  #pragma HLS PIPELINE II=20   // evitar choques de puertos BRAM
 
-  // Sin pipeline ni unroll: reduce replicación de recursos
   b[0] = c_add( c_mul(x0[0], dp1), c_mul(x0[1], off) );
-
-  #pragma HLS UNROLL off
   for (int i = 1; i < N-1; ++i) {
     complex_t t = C_ZERO;
     t = c_add(t, c_mul(x0[i-1], off));
@@ -88,21 +88,17 @@ static void compute_b_vector(
   b[N-1] = c_add( c_mul(x0[N-2], off), c_mul(x0[N-1], dp2) );
 }
 
-// -----------------------------------------------------------------------------
 // Thomas tridiagonal: (off, dp, off) con bordes dp1/dp2
-// c_prime/d_prime en LUTRAM 1P (tamaño pequeño ~4 Kb c/u).
-// -----------------------------------------------------------------------------
 static void thomas_solver(
     complex_t dp,  complex_t dp1, complex_t dp2, complex_t off,
     complex_t b[N],
     complex_t x[N]
 ){
   #pragma HLS INLINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t c_prime[N];
-  #pragma HLS BIND_STORAGE variable=c_prime type=ram_1p impl=lutram
   complex_t d_prime[N];
-  #pragma HLS BIND_STORAGE variable=d_prime type=ram_1p impl=lutram
 
   // i = 0
   complex_t inv1 = complex_div(C_ONE, dp1);
@@ -110,7 +106,6 @@ static void thomas_solver(
   d_prime[0]     = c_mul(b[0], inv1);
 
   // forward
-  #pragma HLS UNROLL off
   for (int i = 1; i < N-1; ++i){
     complex_t denom = c_sub(dp, c_mul(c_prime[i-1], off));
     complex_t invd  = complex_div(C_ONE, denom);
@@ -127,33 +122,28 @@ static void thomas_solver(
 
   // backward
   x[N-1] = d_prime[N-1];
-  #pragma HLS UNROLL off
   for (int i = N-2; i >= 0; --i){
     x[i] = c_sub(d_prime[i], c_mul(c_prime[i], x[i+1]));
   }
 }
 
-// -----------------------------------------------------------------------------
 // ADI en X (columnas j)
-// x0/b/x en LUTRAM 1P; matrices in/out se leen/escriben desde BRAM 2P.
-// -----------------------------------------------------------------------------
 static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t x0[N], b[N], x[N];
-  #pragma HLS BIND_STORAGE variable=x0 type=ram_1p impl=lutram
-  #pragma HLS BIND_STORAGE variable=b  type=ram_1p impl=lutram
-  #pragma HLS BIND_STORAGE variable=x  type=ram_1p impl=lutram
 
   complex_t ung   = c_make(0.0f, dz / (4 * k * dx * dx));
   complex_t neg2u = c_mul(c_make(-2.0f, 0.0f), ung);
   complex_t pos2u = c_mul(c_make( 2.0f, 0.0f), ung);
 
-  #pragma HLS UNROLL off
   for (int j = 0; j < N; ++j){
+    #pragma HLS PIPELINE II=20
+
     // cargar columna j en x0
-    #pragma HLS UNROLL off
     for (int i = 0; i < N; ++i){
+      #pragma HLS PIPELINE II=20
       x0[i] = in[i][j];
     }
 
@@ -173,33 +163,30 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
     thomas_solver(dp_A, dp1_A, dp2_A, c_scale(ung, -1.0f), b, x);
 
     // escribir salida
-    #pragma HLS UNROLL off
     for (int i = 0; i < N; ++i){
+      #pragma HLS PIPELINE II=20
       out[i][j] = x[i];
     }
   }
 }
 
-// -----------------------------------------------------------------------------
 // ADI en Y (filas i)
-// -----------------------------------------------------------------------------
 static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t x0[N], b[N], x[N];
-  #pragma HLS BIND_STORAGE variable=x0 type=ram_1p impl=lutram
-  #pragma HLS BIND_STORAGE variable=b  type=ram_1p impl=lutram
-  #pragma HLS BIND_STORAGE variable=x  type=ram_1p impl=lutram
 
   complex_t ung   = c_make(0.0f, dz / (4 * k * dy * dy));
   complex_t neg2u = c_mul(c_make(-2.0f, 0.0f), ung);
   complex_t pos2u = c_mul(c_make( 2.0f, 0.0f), ung);
 
-  #pragma HLS UNROLL off
   for (int i = 0; i < N; ++i){
+    #pragma HLS PIPELINE II=20
+
     // cargar fila i en x0
-    #pragma HLS UNROLL off
     for (int j = 0; j < N; ++j){
+      #pragma HLS PIPELINE II=20
       x0[j] = in[i][j];
     }
 
@@ -219,17 +206,13 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
     thomas_solver(dp_A, dp1_A, dp2_A, c_scale(ung, -1.0f), b, x);
 
     // escribir salida
-    #pragma HLS UNROLL off
     for (int j = 0; j < N; ++j){
+      #pragma HLS PIPELINE II=20
       out[i][j] = x[j];
     }
   }
 }
 
-// -----------------------------------------------------------------------------
-// Top-level: KV260-friendly (BRAM 2P para matrices, LUTRAM 1P en vectores),
-// compartición fuerte de helpers para bajar recursos, sin pipelines agresivos.
-// -----------------------------------------------------------------------------
 void diffraction_only(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
@@ -242,42 +225,30 @@ void diffraction_only(
   #pragma HLS INTERFACE s_axilite port=phi_out bundle=control
   #pragma HLS INTERFACE s_axilite port=steps  bundle=control
 
-  // Compartición FUERTE de helpers: una instancia por función en este scope.
-  #pragma HLS ALLOCATION instances=c_add       limit=1 function
-  #pragma HLS ALLOCATION instances=c_sub       limit=1 function
-  #pragma HLS ALLOCATION instances=c_mul       limit=1 function
-  #pragma HLS ALLOCATION instances=c_scale     limit=1 function
-  #pragma HLS ALLOCATION instances=c_conj      limit=1 function
-  #pragma HLS ALLOCATION instances=c_abs2      limit=1 function
-  #pragma HLS ALLOCATION instances=c_div_safe  limit=1 function
-  #pragma HLS ALLOCATION instances=complex_div limit=1 function
-
-  // Matrices grandes en BRAM 2P (más fácil de rutear en K26 que URAM para este tamaño)
+  // BRAM 2P, sin particiones (austero)
   complex_t phi[N][N];
   complex_t tmp[N][N];
-  #pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=bram
-  #pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=bram
+  #pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=uram
+  #pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=uram
 
-  // Copia de entrada (sin pipeline ni unroll)
-  #pragma HLS UNROLL off
+  // Copia de entrada (pipeline humilde)
   for (int i = 0; i < N; ++i){
-    #pragma HLS UNROLL off
+    #pragma HLS PIPELINE II=8
     for (int j = 0; j < N; ++j){
       phi[i][j] = phi_in[i][j];
     }
   }
 
-  // Núcleo ADI secuencial repetido steps veces (no pipeline para minimizar recursos)
-  #pragma HLS UNROLL off
+  // Núcleo ADI secuencial repetido steps veces
   for (int s = 0; s < steps; ++s){
+    #pragma HLS PIPELINE II=20
     adi_x(phi, tmp);
     adi_y(tmp, phi);
   }
 
-  // Copia de salida (sin pipeline ni unroll)
-  #pragma HLS UNROLL off
+  // Copia de salida (pipeline humilde)
   for (int i = 0; i < N; ++i){
-    #pragma HLS UNROLL off
+    #pragma HLS PIPELINE II=8
     for (int j = 0; j < N; ++j){
       phi_out[i][j] = phi[i][j];
     }

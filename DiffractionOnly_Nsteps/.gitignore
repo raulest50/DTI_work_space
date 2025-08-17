@@ -1,26 +1,17 @@
-# Ignore build output directory
-/build
-/export
+# Project-specific ignores for DiffractionOnly_Nsteps
 
-# Ignore object files and dependent files
-.o
-.d
+# Specific directories for this project
+/DiffractionOnly_Nsteps/hls/
+/DiffractionOnly_Nsteps/logs/
+/DiffractionOnly_Nsteps/reports/
 
-#Ignore logs folder and log files
-/logs
-.log
+# Ensure test data files are not ignored
+!golden.dat
+!phi_in.dat
 
-#Ignore lock files
-.lock
-
-.bin
-.pdi
-.vitisWorkspace.json
-
-_ide/logs
-_ide/.wsdata
-
+# Other project directories to ignore
 /DiffractionOnly_v1/
 
-dfx_runtime.txt
-.hls.failed
+# The rest of the patterns are covered by the global .gitignore
+
+DiffractionOnly_Nsteps

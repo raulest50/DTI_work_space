@@ -1,0 +1,12 @@
+{
+  "name": "Diff_Losses_Nsteps",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "Diff_Losses_Nsteps"
+  },
+  "useSysrootToolchain": false
+}

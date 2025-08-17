@@ -5,13 +5,33 @@
 **/_ide/
 **/.Xil/
 **/report/
+**/reports/
+**/logs/
+**/hls/
 **/packaged_kernel*/
+**/.autopilot/
+**/.settings/
+**/.clangd/
+**/solution*/
+**/csim/build/
+**/syn/
+**/impl/
 
 # Archivos específicos de Vitis
 **/*.vitis
 **/*.coe
 **/*.xsa
 **/.vitisWorkspace.json
+**/*.hlscompile_summary
+**/*.hlsrun_csim_summary
+**/*.str
+**/*.xpe
+**/*.xpr
+**/*.wcfg
+**/*.dcp
+**/*.hwh
+.clang-format
+compile_commands.json.user
 
 # Archivos de simulación y síntesis
 **/*.sim/
@@ -28,6 +48,16 @@
 # Archivos objeto y dependencias
 **/*.o
 **/*.d
+**/*.obj
+**/*.bc
+**/*.exe
+**/*.tcl
+**/*.xml
+**/*.yml
+**/*.diag
+**/*.idx
+**/*.tmp
+**/*.adb
 
 # Archivos de log y temporales
 **/*.log
@@ -36,7 +66,30 @@
 **/*.rpt
 **/*.lock
 **/*.swp
+**/*.swo
 **/*~
 **/.DS_Store
 
-.idea
+# Archivos de datos (excepto los de prueba)
+**/*.dat
+!**/golden.dat
+!**/phi_in.dat
+
+# Archivos específicos del proyecto
+dfx_runtime.txt
+.hls.failed
+
+# IDE y editores
+.idea/
+.vscode/
+
+# Archivos de configuración de Vitis HLS
+**/hls_config.cfg.backup
+**/*.app
+**/*.elf
+**/*.a
+
+# Archivos temporales de Windows
+**/Thumbs.db
+**/ehthumbs.db
+**/Desktop.ini
