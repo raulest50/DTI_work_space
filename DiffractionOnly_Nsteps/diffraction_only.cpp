@@ -75,7 +75,7 @@ static void compute_b_vector(
           complex_t b [N]
 ){
   #pragma HLS INLINE off
-  #pragma HLS PIPELINE off   // evitar choques de puertos BRAM
+  #pragma HLS PIPELINE II=20   // evitar choques de puertos BRAM
 
   b[0] = c_add( c_mul(x0[0], dp1), c_mul(x0[1], off) );
   for (int i = 1; i < N-1; ++i) {
@@ -95,7 +95,7 @@ static void thomas_solver(
     complex_t x[N]
 ){
   #pragma HLS INLINE off
-  #pragma HLS PIPELINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t c_prime[N];
   complex_t d_prime[N];
@@ -130,7 +130,7 @@ static void thomas_solver(
 // ADI en X (columnas j)
 static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
-  #pragma HLS PIPELINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t x0[N], b[N], x[N];
 
@@ -139,11 +139,11 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
   complex_t pos2u = c_mul(c_make( 2.0f, 0.0f), ung);
 
   for (int j = 0; j < N; ++j){
-    #pragma HLS PIPELINE off
+    #pragma HLS PIPELINE II=20
 
     // cargar columna j en x0
     for (int i = 0; i < N; ++i){
-      #pragma HLS PIPELINE off
+      #pragma HLS PIPELINE II=20
       x0[i] = in[i][j];
     }
 
@@ -164,7 +164,7 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
 
     // escribir salida
     for (int i = 0; i < N; ++i){
-      #pragma HLS PIPELINE off
+      #pragma HLS PIPELINE II=20
       out[i][j] = x[i];
     }
   }
@@ -173,7 +173,7 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
 // ADI en Y (filas i)
 static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
-  #pragma HLS PIPELINE off
+  #pragma HLS PIPELINE II=20
 
   complex_t x0[N], b[N], x[N];
 
@@ -182,11 +182,11 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   complex_t pos2u = c_mul(c_make( 2.0f, 0.0f), ung);
 
   for (int i = 0; i < N; ++i){
-    #pragma HLS PIPELINE off
+    #pragma HLS PIPELINE II=20
 
     // cargar fila i en x0
     for (int j = 0; j < N; ++j){
-      #pragma HLS PIPELINE off
+      #pragma HLS PIPELINE II=20
       x0[j] = in[i][j];
     }
 
@@ -207,7 +207,7 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
 
     // escribir salida
     for (int j = 0; j < N; ++j){
-      #pragma HLS PIPELINE off
+      #pragma HLS PIPELINE II=20
       out[i][j] = x[j];
     }
   }
@@ -215,19 +215,21 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
 
 void diffraction_only(
     const complex_t phi_in[N][N],
-          complex_t phi_out[N][N]
+          complex_t phi_out[N][N],
+    int steps
 ){
   #pragma HLS INTERFACE s_axilite port=return bundle=control
   #pragma HLS INTERFACE m_axi     port=phi_in  offset=slave bundle=gmem depth=4096
   #pragma HLS INTERFACE s_axilite port=phi_in  bundle=control
   #pragma HLS INTERFACE m_axi     port=phi_out offset=slave bundle=gmem depth=4096
   #pragma HLS INTERFACE s_axilite port=phi_out bundle=control
+  #pragma HLS INTERFACE s_axilite port=steps  bundle=control
 
   // BRAM 2P, sin particiones (austero)
   complex_t phi[N][N];
   complex_t tmp[N][N];
-  #pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=bram
-  #pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=bram
+  #pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=uram
+  #pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=uram
 
   // Copia de entrada (pipeline humilde)
   for (int i = 0; i < N; ++i){
@@ -237,9 +239,12 @@ void diffraction_only(
     }
   }
 
-  // Núcleo ADI secuencial (sin pipeline interno para evitar 200-880/885)
-  adi_x(phi, tmp);
-  adi_y(tmp, phi);
+  // Núcleo ADI secuencial repetido steps veces
+  for (int s = 0; s < steps; ++s){
+    #pragma HLS PIPELINE II=20
+    adi_x(phi, tmp);
+    adi_y(tmp, phi);
+  }
 
   // Copia de salida (pipeline humilde)
   for (int i = 0; i < N; ++i){
