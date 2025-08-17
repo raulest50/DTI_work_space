@@ -34,5 +34,6 @@ static bool      c_near_zero(const complex_t &z, data_t eps2);
 // Top
 void diffraction_only(
     const complex_t phi_in[N][N],
-          complex_t phi_out[N][N]
+          complex_t phi_out[N][N],
+    int steps
 );
