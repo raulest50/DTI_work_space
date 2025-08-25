@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "directory": "C:\\DTI_work_space\\Diff_Losses_Nsteps",
+    "arguments": [
+      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "-fhls",
+      "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
+      "-fhlstoplevel=diffraction_only",
+      "-c",
+      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_only.cpp"
+    ],
+    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_only.cpp"
+  },
+  {
+    "directory": "C:\\DTI_work_space\\Diff_Losses_Nsteps",
+    "arguments": [
+      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "-fhls-tb",
+      "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
+      "-c",
+      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_tb.cpp"
+    ],
+    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_tb.cpp"
+  }
+]
