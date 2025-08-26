@@ -24,3 +24,5 @@ _ide/.wsdata
 
 dfx_runtime.txt
 .hls.failed
+
+/BufferOverlay/compile_commands.json
