@@ -93,3 +93,5 @@ dfx_runtime.txt
 **/Thumbs.db
 **/ehthumbs.db
 **/Desktop.ini
+
+/BufferOverlay/BufferOverlay/
