@@ -1,8 +1,8 @@
 #pragma once
 #include <complex>
-#include <ap_int.h>
-#include <ap_fixed.h>
-#include <hls_stream.h>
+#include "ap_int.h"
+#include "ap_fixed.h"
+#include "hls_stream.h"
 
 #ifndef N
 #define N 64
@@ -32,7 +32,7 @@ static complex_t c_div_safe(const complex_t &num, const complex_t &den, data_t e
 static bool      c_near_zero(const complex_t &z, data_t eps2);
 
 // Top
-void diffraction_only(
+void diff_losses(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
     int steps

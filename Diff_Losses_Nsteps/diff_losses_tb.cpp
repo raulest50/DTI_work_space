@@ -1,4 +1,4 @@
-#include "diffraction_only.h"
+#include "diff_losses.h"
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -26,7 +26,7 @@ int main() {
     read_matrix("./phi_in.dat", in);
     read_matrix("./golden.dat", golden);
 
-    diffraction_only(in, out, 1);
+    diff_losses(in, out, 361);
 
     double err = 0.0;
     for (int i = 0; i < N; i++) {
