@@ -6,11 +6,11 @@
       "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls",
       "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
-      "-fhlstoplevel=diffraction_only",
+      "-fhlstoplevel=diff_losses",
       "-c",
-      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_only.cpp"
+      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses.cpp"
     ],
-    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_only.cpp"
+    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses.cpp"
   },
   {
     "directory": "C:\\DTI_work_space\\Diff_Losses_Nsteps",
@@ -20,8 +20,8 @@
       "-fhls-tb",
       "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
       "-c",
-      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_tb.cpp"
+      "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses_tb.cpp"
     ],
-    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diffraction_tb.cpp"
+    "file": "C:\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses_tb.cpp"
   }
 ]

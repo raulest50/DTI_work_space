@@ -1,5 +1,5 @@
-// diffraction_only.cpp
-#include "diffraction_only.h"
+// diff_losses.cpp
+#include "diff_losses.h"
 
 // ---- Implementación de wrappers (una firma, pragmas dentro) ----
 static complex_t c_add(const complex_t &a, const complex_t &b) {
@@ -213,7 +213,7 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   }
 }
 
-void diffraction_only(
+void diff_losses(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
     int steps
