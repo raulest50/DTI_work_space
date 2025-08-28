@@ -11,6 +11,10 @@ k = 7853981.6339
 eps = 1e-12
 
 
+def campo_tem00(x, y, w0):
+    return np.exp(- (x**2 + y**2) / (w0**2))
+
+
 def custom_thomas_solver(dp, dp1, dp2, do, b):
     n = b.shape[0]
     c_prime = np.zeros(n-1, dtype=np.complex64)
@@ -94,10 +98,15 @@ def save_matrix(fname, arr):
 
 
 def main():
-    np.random.seed(0)
-    phi_in = (np.random.randn(N, N) + 1j*np.random.randn(N, N)).astype(np.complex64)
-    tmp = adi_x(phi_in)
-    phi_out = adi_y(tmp)
+    x = np.linspace(-Lx/2, Lx/2, N)
+    y = np.linspace(-Ly/2, Ly/2, N)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    phi_in = campo_tem00(X, Y, 5e-6).astype(np.complex64)
+    phi = phi_in.copy()
+    for _ in range(361):
+        tmp = adi_x(phi)
+        phi = adi_y(tmp)
+    phi_out = phi
     here = Path(__file__).resolve().parent
     save_matrix(here / 'phi_in.dat', phi_in)
     save_matrix(here / 'golden.dat', phi_out)

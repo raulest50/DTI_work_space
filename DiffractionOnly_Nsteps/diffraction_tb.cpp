@@ -26,7 +26,7 @@ int main() {
     read_matrix("./phi_in.dat", in);
     read_matrix("./golden.dat", golden);
 
-    diffraction_only(in, out, 1);
+    diffraction_only(in, out, 361);
 
     double err = 0.0;
     for (int i = 0; i < N; i++) {
