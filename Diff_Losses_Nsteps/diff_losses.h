@@ -35,5 +35,7 @@ static bool      c_near_zero(const complex_t &z, data_t eps2);
 void diff_losses(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
-    int steps
+    int steps,
+    data_t alpha,
+    data_t beta
 );
