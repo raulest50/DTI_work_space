@@ -26,7 +26,9 @@ int main() {
     read_matrix("./phi_in.dat", in);
     read_matrix("./golden.dat", golden);
 
-    diff_losses(in, out, 361);
+    const data_t alpha = 0.0f;
+    const data_t beta  = 0.0f;
+    diff_losses(in, out, 361, alpha, beta);
 
     double err = 0.0;
     for (int i = 0; i < N; i++) {

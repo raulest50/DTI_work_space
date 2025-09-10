@@ -1,5 +1,9 @@
 // diff_losses.cpp
 #include "diff_losses.h"
+#include <cmath>
+
+// Provide hls::exp for host compilation
+namespace hls { using std::exp; }
 
 // ---- Wrappers con firma única (evita clonación de std::complex) ----
 static complex_t c_add(const complex_t &a, const complex_t &b) {
@@ -54,6 +58,32 @@ static constexpr data_t eps2 = eps * eps;
 
 static const complex_t C_ONE  = complex_t(1.0f, 0.0f);
 static const complex_t C_ZERO = complex_t(0.0f, 0.0f);
+
+// Absorption operators -------------------------------------------------
+static void half_linear_absorption(complex_t phi[N][N], data_t alpha) {
+  #pragma HLS INLINE off
+  data_t c = hls::exp(-alpha * dz / 4);
+  for (int i = 0; i < N; i++)
+    for (int j = 0; j < N; j++)
+      phi[i][j] = c_scale(phi[i][j], c);
+}
+
+static void half_2photon_absorption(complex_t phi[N][N], data_t beta) {
+  #pragma HLS INLINE off
+  for (int i = 0; i < N; i++)
+    for (int j = 0; j < N; j++) {
+      data_t atten = hls::exp(-beta * dz / 4 * c_abs2(phi[i][j]));
+      phi[i][j] = c_scale(phi[i][j], atten);
+    }
+}
+
+static void apply_N_midpoint(complex_t phi[N][N], data_t alpha, data_t beta) {
+  #pragma HLS INLINE off
+  half_linear_absorption(phi, alpha);
+  half_2photon_absorption(phi, beta);
+  half_2photon_absorption(phi, beta);
+  half_linear_absorption(phi, alpha);
+}
 
 // División compleja protegida (una sola implementación)
 static complex_t complex_div(const complex_t &num, const complex_t &den) {
@@ -197,7 +227,9 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
 void diff_losses(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
-    int steps
+    int steps,
+    data_t alpha,
+    data_t beta
 ){
   #pragma HLS INTERFACE s_axilite port=return bundle=control
   #pragma HLS INTERFACE m_axi     port=phi_in  offset=slave bundle=gmem depth=4096
@@ -205,6 +237,8 @@ void diff_losses(
   #pragma HLS INTERFACE m_axi     port=phi_out offset=slave bundle=gmem depth=4096
   #pragma HLS INTERFACE s_axilite port=phi_out bundle=control
   #pragma HLS INTERFACE s_axilite port=steps  bundle=control
+  #pragma HLS INTERFACE s_axilite port=alpha  bundle=control
+  #pragma HLS INTERFACE s_axilite port=beta   bundle=control
 
   // Matrices internas en BRAM 2P (pequeño y rápido de sintetizar)
   complex_t phi[N][N];
@@ -220,6 +254,7 @@ void diff_losses(
   // Repite ADI 'steps' veces (sin pipeline alrededor)
   for (int s = 0; s < steps; ++s){
     adi_x(phi, tmp);
+    apply_N_midpoint(tmp, alpha, beta);
     adi_y(tmp, phi);
   }
 
