@@ -1,6 +1,6 @@
 [
   {
-    "directory": "C:\\DTI_work_space\\Custom_Thomas_Solver_v1",
+    "directory": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1",
     "arguments": [
       "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
       "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
@@ -8,20 +8,20 @@
       "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
       "-fhlstoplevel=thomas_solver",
       "-c",
-      "C:\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_solver.cpp"
+      "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_solver.cpp"
     ],
-    "file": "C:\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_solver.cpp"
+    "file": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_solver.cpp"
   },
   {
-    "directory": "C:\\DTI_work_space\\Custom_Thomas_Solver_v1",
+    "directory": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1",
     "arguments": [
       "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
       "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls-tb",
       "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
       "-c",
-      "C:\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_tb.cpp"
+      "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_tb.cpp"
     ],
-    "file": "C:\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_tb.cpp"
+    "file": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Custom_Thomas_Solver_v1\\.\\thomas_tb.cpp"
   }
 ]
