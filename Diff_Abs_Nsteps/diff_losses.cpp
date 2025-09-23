@@ -60,29 +60,16 @@ static const complex_t C_ONE  = complex_t(1.0f, 0.0f);
 static const complex_t C_ZERO = complex_t(0.0f, 0.0f);
 
 // Absorption operators -------------------------------------------------
-static void half_linear_absorption(complex_t phi[N][N], data_t alpha) {
+static void apply_absorption(complex_t phi[N][N], data_t alpha, data_t beta) {
   #pragma HLS INLINE off
-  data_t c = hls::exp(-alpha * dz / 4);
-  for (int i = 0; i < N; i++)
-    for (int j = 0; j < N; j++)
-      phi[i][j] = c_scale(phi[i][j], c);
-}
-
-static void half_2photon_absorption(complex_t phi[N][N], data_t beta) {
-  #pragma HLS INLINE off
+  data_t linear_factor = hls::exp(-alpha * dz / 2);
   for (int i = 0; i < N; i++)
     for (int j = 0; j < N; j++) {
-      data_t atten = hls::exp(-beta * dz / 4 * c_abs2(phi[i][j]));
-      phi[i][j] = c_scale(phi[i][j], atten);
+      phi[i][j] = c_scale(phi[i][j], linear_factor);
+      data_t intensity = c_abs2(phi[i][j]);
+      data_t tpa_factor = hls::exp(-beta * dz / 2 * intensity);
+      phi[i][j] = c_scale(phi[i][j], tpa_factor);
     }
-}
-
-static void apply_N_midpoint(complex_t phi[N][N], data_t alpha, data_t beta) {
-  #pragma HLS INLINE off
-  half_linear_absorption(phi, alpha);
-  half_2photon_absorption(phi, beta);
-  half_2photon_absorption(phi, beta);
-  half_linear_absorption(phi, alpha);
 }
 
 // División compleja protegida (una sola implementación)
@@ -254,7 +241,7 @@ void diff_losses(
   // Repite ADI 'steps' veces (sin pipeline alrededor)
   for (int s = 0; s < steps; ++s){
     adi_x(phi, tmp);
-    apply_N_midpoint(tmp, alpha, beta);
+    apply_absorption(tmp, alpha, beta);
     adi_y(tmp, phi);
   }
 
