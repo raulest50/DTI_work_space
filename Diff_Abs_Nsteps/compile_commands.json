@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "directory": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps",
+    "arguments": [
+      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "-fhls",
+      "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
+      "-fhlstoplevel=diff_losses",
+      "-c",
+      "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps\\.\\diff_losses.cpp"
+    ],
+    "file": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps\\.\\diff_losses.cpp"
+  },
+  {
+    "directory": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps",
+    "arguments": [
+      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "-fhls-tb",
+      "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
+      "-c",
+      "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps\\.\\diff_losses_tb.cpp"
+    ],
+    "file": "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps\\.\\diff_losses_tb.cpp"
+  }
+]
