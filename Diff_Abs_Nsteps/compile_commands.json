@@ -6,7 +6,7 @@
       "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls",
       "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
-      "-fhlstoplevel=diff_losses",
+      "-fhlstoplevel=diff_abs_nsteps",
       "-c",
       "C:\\Users\\Usuario\\Desktop\\DTI_work_space\\Diff_Abs_Nsteps\\.\\diff_losses.cpp"
     ],

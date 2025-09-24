@@ -211,7 +211,7 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   }
 }
 
-void diff_losses(
+void diff_abs_nsteps(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
     int steps,
