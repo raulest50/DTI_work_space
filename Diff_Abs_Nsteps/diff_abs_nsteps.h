@@ -32,7 +32,7 @@ static complex_t c_div_safe(const complex_t &num, const complex_t &den, data_t e
 static bool      c_near_zero(const complex_t &z, data_t eps2);
 
 // Top
-void diff_losses(
+void diff_abs_nsteps(
     const complex_t phi_in[N][N],
           complex_t phi_out[N][N],
     int steps,

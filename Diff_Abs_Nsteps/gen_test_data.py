@@ -9,6 +9,8 @@ dy = Ly / N
 dz = 1e-4
 k = 7853981.6339
 eps = 1e-12
+alpha = 300.0  # 0.3 mm^-1 -> 300 m^-1
+beta = 1.0e-11 # 10^-11 m/W
 
 
 def campo_tem00(x, y, w0):
@@ -89,6 +91,15 @@ def adi_y(phi):
     return phi_inter
 
 
+def apply_absorption(field):
+    linear_factor = np.float32(np.exp(-alpha * dz / 2))
+    field *= linear_factor
+    intensity = np.real(field) * np.real(field) + np.imag(field) * np.imag(field)
+    tpa_factor = np.exp(-beta * dz / 2 * intensity).astype(np.float32)
+    field *= tpa_factor
+    return field
+
+
 def save_matrix(fname, arr):
     with open(fname, 'w') as f:
         for j in range(N):
@@ -105,6 +116,7 @@ def main():
     phi = phi_in.copy()
     for _ in range(361):
         tmp = adi_x(phi)
+        tmp = apply_absorption(tmp)
         phi = adi_y(tmp)
     phi_out = phi
     here = Path(__file__).resolve().parent

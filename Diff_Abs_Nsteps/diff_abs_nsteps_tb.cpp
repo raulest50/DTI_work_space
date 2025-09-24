@@ -1,4 +1,4 @@
-#include "diff_losses.h"
+#include "diff_abs_nsteps.h"
 #include <fstream>
 #include <iostream>
 #include <cmath>
@@ -26,9 +26,9 @@ int main() {
     read_matrix("./phi_in.dat", in);
     read_matrix("./golden.dat", golden);
 
-    const data_t alpha = 0.0f;
-    const data_t beta  = 0.0f;
-    diff_losses(in, out, 361, alpha, beta);
+    const data_t alpha = 300.0f;      // 0.3 mm^-1 -> 300 m^-1
+    const data_t beta  = 1.0e-11f;    // 10^-11 m/W
+    diff_abs_nsteps(in, out, 361, alpha, beta);
 
     double err = 0.0;
     for (int i = 0; i < N; i++) {
