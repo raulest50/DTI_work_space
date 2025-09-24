@@ -1,5 +1,5 @@
-// diff_losses.cpp
-#include "diff_losses.h"
+// diff_abs_nsteps.cpp
+#include "diff_abs_nsteps.h"
 #include <cmath>
 
 // Provide hls::exp for host compilation
