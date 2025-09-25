@@ -1,0 +1,12 @@
+{
+  "name": "Diff_Abs_Nsteps_opt1",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "Diff_Abs_Nsteps_opt1"
+  },
+  "useSysrootToolchain": false
+}
