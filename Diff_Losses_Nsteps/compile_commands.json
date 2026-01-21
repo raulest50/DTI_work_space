@@ -1,27 +1,27 @@
 [
   {
-    "directory": "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps",
+    "directory": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps",
     "arguments": [
-      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
-      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "C:\\AMDDesignTools\\2025.2\\Vitis\\win64\\tools\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\AMDDesignTools\\2025.2\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls",
-      "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
+      "-hls-syn-headers-dir=C:\\AMDDesignTools\\2025.2\\Vitis\\common\\technology\\autopilot",
       "-fhlstoplevel=diff_losses",
       "-c",
-      "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses.cpp"
+      "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps\\diff_losses.cpp"
     ],
-    "file": "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses.cpp"
+    "file": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps\\diff_losses.cpp"
   },
   {
-    "directory": "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps",
+    "directory": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps",
     "arguments": [
-      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
-      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "C:\\AMDDesignTools\\2025.2\\Vitis\\win64\\tools\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\AMDDesignTools\\2025.2\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls-tb",
-      "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
+      "-hls-sim-headers-dir=C:\\AMDDesignTools\\2025.2\\Vitis\\include",
       "-c",
-      "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses_tb.cpp"
+      "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps\\diff_losses_tb.cpp"
     ],
-    "file": "C:\\Xilinx\\Gws\\DTI_work_space\\Diff_Losses_Nsteps\\.\\diff_losses_tb.cpp"
+    "file": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\Diff_Losses_Nsteps\\diff_losses_tb.cpp"
   }
 ]

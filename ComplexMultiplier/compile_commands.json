@@ -1,27 +1,27 @@
 [
   {
-    "directory": "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier",
+    "directory": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier",
     "arguments": [
-      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
-      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "C:\\AMDDesignTools\\2025.2\\Vitis\\win64\\tools\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\AMDDesignTools\\2025.2\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls",
-      "-hls-syn-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\common\\technology\\autopilot",
+      "-hls-syn-headers-dir=C:\\AMDDesignTools\\2025.2\\Vitis\\common\\technology\\autopilot",
       "-fhlstoplevel=complex_mul",
       "-c",
-      "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier\\.\\complex_mul.cpp"
+      "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier\\complex_mul.cpp"
     ],
-    "file": "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier\\.\\complex_mul.cpp"
+    "file": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier\\complex_mul.cpp"
   },
   {
-    "directory": "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier",
+    "directory": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier",
     "arguments": [
-      "C:\\Xilinx\\2025.1\\Vitis\\vcxx\\libexec\\clang++.exe",
-      "--sysroot=C:\\Xilinx\\2025.1\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
+      "C:\\AMDDesignTools\\2025.2\\Vitis\\win64\\tools\\vcxx\\libexec\\clang++.exe",
+      "--sysroot=C:\\AMDDesignTools\\2025.2\\Vitis\\tps\\mingw\\10.0.0\\win64.o\\nt",
       "-fhls-tb",
-      "-hls-sim-headers-dir=C:\\Xilinx\\2025.1\\Vitis\\include",
+      "-hls-sim-headers-dir=C:\\AMDDesignTools\\2025.2\\Vitis\\include",
       "-c",
-      "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier\\.\\complex_mul_tb.cpp"
+      "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier\\complex_mul_tb.cpp"
     ],
-    "file": "C:\\Xilinx\\Gws\\DTI_work_space\\ComplexMultiplier\\.\\complex_mul_tb.cpp"
+    "file": "C:\\Users\\hardp\\Desktop\\fotonica109_ws\\DTI_work_space\\ComplexMultiplier\\complex_mul_tb.cpp"
   }
 ]
