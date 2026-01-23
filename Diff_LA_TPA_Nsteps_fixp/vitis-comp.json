@@ -1,0 +1,13 @@
+{
+  "name": "Diff_LA_TPA_Nsteps_fixp",
+  "type": "HLS",
+  "configuration": {
+    "componentType": "HLS",
+    "configFiles": [
+      "hls_config.cfg"
+    ],
+    "work_dir": "Diff_LA_TPA_Nsteps_fixp"
+  },
+  "useSysrootToolchain": false,
+  "templateFlow": "VITIS"
+}

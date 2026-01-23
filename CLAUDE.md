@@ -197,6 +197,124 @@ ap_fixed<27, 8> dsp_optimized;  // Maps to single DSP block multiply
 
 ---
 
+## Fixed-Point Implementation Best Practices
+
+Converting floating-point algorithms to fixed-point requires careful consideration of range, precision, and HLS math function limitations.
+
+### Type Selection Strategy
+
+```cpp
+#include "ap_fixed.h"
+#include "hls_math.h"
+
+// Tunable parameters - adjust based on your value ranges
+#define DATA_TOTAL_BITS  27   // Total bits (int + frac)
+#define DATA_INT_BITS    8    // Integer bits (determines range)
+
+// Main arithmetic type - AP_RND rounds, AP_SAT saturates on overflow
+typedef ap_fixed<DATA_TOTAL_BITS, DATA_INT_BITS, AP_RND, AP_SAT> data_t;
+
+// Range for ap_fixed<27,8>:
+//   Max: +127.9999998 (2^7 - 2^-19)
+//   Min: -128
+//   Resolution: 2^-19 ≈ 1.9e-6
+```
+
+### Quantization Mode Reference
+
+| Mode | Behavior | Use Case |
+|------|----------|----------|
+| `AP_RND` | Round to nearest | General arithmetic (default choice) |
+| `AP_TRN` | Truncate toward -∞ | Faster, less accurate |
+| `AP_SAT` | Saturate on overflow | Prevents wraparound errors |
+| `AP_WRAP` | Wrap on overflow | Faster but can cause large errors |
+
+**Recommended combination:** `ap_fixed<W, I, AP_RND, AP_SAT>` for safety.
+
+### HLS Math Function Bit-Width Limitations (CRITICAL)
+
+**Problem:** `hls::exp()`, `hls::sin()`, `hls::cos()`, `hls::sqrt()` only support specific bit-widths.
+
+| Function | Supported Types |
+|----------|----------------|
+| `hls::exp()` | `ap_fixed<16,8>` or narrower |
+| `hls::sin()`, `hls::cos()` | `ap_fixed<32,I>` where I ≤ 3 |
+| `hls::sqrt()` | Up to `ap_fixed<49,I>` |
+
+**Solution:** Create wrapper functions that narrow input, call HLS function, then widen output:
+
+```cpp
+// Narrow type for hls::exp() compatibility
+typedef ap_fixed<16, 8, AP_RND, AP_SAT> exp_t;
+
+// Wrapper: narrow → compute → widen
+static data_t fp_exp(data_t x) {
+    #pragma HLS INLINE off
+    exp_t x_narrow = (exp_t)x;      // Narrow to 16,8
+    exp_t result = hls::exp(x_narrow);
+    return (data_t)result;          // Widen back to 27,8
+}
+```
+
+### Precomputing Constants That Overflow
+
+**Problem:** Physical constants often exceed fixed-point range.
+Example: wavenumber k = 7.85×10⁶ overflows `ap_fixed<27,8>` (max ≈ 128).
+
+**Solution:** Precompute combined coefficients that fit in range:
+
+```cpp
+// BAD - k overflows ap_fixed<27,8>:
+// static const data_t k = 7853981.6339f;
+// data_t coeff = dz / (4 * k * dx * dx);  // Runtime overflow!
+
+// GOOD - precompute the combined coefficient:
+// dz/(4·k·dx²) = 1e-4 / (4 × 7.85e6 × (7.03e-7)²) ≈ 6.44
+static const data_t UNG_COEFF = data_t(6.4368);
+
+// Use precomputed value directly
+complex_t ung = c_make(data_t(0), UNG_COEFF);
+```
+
+### Fixed-Point Testbench Considerations
+
+1. **Relaxed error thresholds:** Use 1e-2 instead of 1e-3 for RMS error
+2. **Range analysis:** Log min/max/mean of inputs and outputs
+3. **Overflow detection:** Check for values near saturation limits
+4. **Effective bits metric:** Compare `−log₂(relative_error)` to expected precision
+
+```cpp
+// Detect potential saturation
+double sat_max = (1 << (DATA_INT_BITS - 1)) - 1;  // e.g., 127 for 8 int bits
+if (std::abs(value) > sat_max * 0.99) {
+    overflow_count++;
+}
+
+// Effective bits of accuracy
+double eff_bits = -std::log2(std::abs((computed - golden) / golden));
+// For ap_fixed<27,8>: expect ~19 bits (fractional bits)
+```
+
+### Migration Checklist (Float → Fixed)
+
+1. **Analyze value ranges** in your algorithm (min, max for all variables)
+2. **Choose bit-widths:** Integer bits ≥ ceil(log₂(max_value)) + 1 (sign)
+3. **Identify HLS math calls** and check supported bit-widths
+4. **Create wrapper functions** for unsupported bit-widths
+5. **Precompute large constants** as combined coefficients
+6. **Replace float literals** with `data_t(value)` constructors
+7. **Update testbench** with range logging and relaxed thresholds
+8. **Run C simulation** to verify numerical accuracy before synthesis
+
+### References - Fixed-Point in Vitis HLS
+
+- [UG1399: Arbitrary Precision Types](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Using-Arbitrary-Precision-Data-Types)
+- [UG1399: HLS Math Library](https://docs.amd.com/r/en-US/ug1399-vitis-hls/HLS-Math-Library)
+- [UG1399: Fixed-Point Math Functions](https://docs.amd.com/r/en-US/ug1399-vitis-hls/Fixed-Point-Math-Functions)
+- [Xilinx AR#69908: hls::exp supported types](https://support.xilinx.com/s/article/69908)
+
+---
+
 ## Common Synthesis Issues & Solutions
 
 ### LUT Overflow (>100%)

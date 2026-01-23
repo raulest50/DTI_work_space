@@ -120,6 +120,9 @@ static void thomas_solver(
 
   complex_t c_prime[N];
   complex_t d_prime[N];
+  // Force arrays to BRAM to reduce FF/LUT usage
+  #pragma HLS BIND_STORAGE variable=c_prime type=ram_1p impl=bram
+  #pragma HLS BIND_STORAGE variable=d_prime type=ram_1p impl=bram
 
   // i = 0
   complex_t inv1 = complex_div(C_ONE, dp1);
@@ -153,6 +156,10 @@ static void adi_x(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
 
   complex_t x0[N], b[N], x[N];
+  // Force arrays to BRAM to reduce FF/LUT usage
+  #pragma HLS BIND_STORAGE variable=x0 type=ram_1p impl=bram
+  #pragma HLS BIND_STORAGE variable=b type=ram_1p impl=bram
+  #pragma HLS BIND_STORAGE variable=x type=ram_1p impl=bram
 
   complex_t ung   = c_make(0.0f, dz / (4 * k * dx * dx));
   complex_t neg2u = c_mul(c_make(-2.0f, 0.0f), ung);
@@ -191,6 +198,10 @@ static void adi_y(const complex_t in[N][N], complex_t out[N][N]){
   #pragma HLS INLINE off
 
   complex_t x0[N], b[N], x[N];
+  // Force arrays to BRAM to reduce FF/LUT usage
+  #pragma HLS BIND_STORAGE variable=x0 type=ram_1p impl=bram
+  #pragma HLS BIND_STORAGE variable=b type=ram_1p impl=bram
+  #pragma HLS BIND_STORAGE variable=x type=ram_1p impl=bram
 
   complex_t ung   = c_make(0.0f, dz / (4 * k * dy * dy));
   complex_t neg2u = c_mul(c_make(-2.0f, 0.0f), ung);
@@ -240,11 +251,12 @@ void diff_losses(
   #pragma HLS INTERFACE s_axilite port=alpha  bundle=control
   #pragma HLS INTERFACE s_axilite port=beta   bundle=control
 
-  // Matrices internas en BRAM 2P (pequeño y rápido de sintetizar)
+  // Matrices internas - usar URAM para reducir uso de BRAM/FF/LUT
+  // URAM es más eficiente para arrays grandes (64x64 = 4096 elementos)
   complex_t phi[N][N];
   complex_t tmp[N][N];
-  #pragma HLS BIND_STORAGE variable=phi type=ram_2p impl=bram
-  #pragma HLS BIND_STORAGE variable=tmp type=ram_2p impl=bram
+  #pragma HLS BIND_STORAGE variable=phi type=ram_s2p impl=uram
+  #pragma HLS BIND_STORAGE variable=tmp type=ram_s2p impl=uram
 
   // Copia de entrada (sin pipeline)
   for (int i = 0; i < N; ++i)
